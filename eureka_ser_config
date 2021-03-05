@@ -1,0 +1,99 @@
+spring:
+  profiles:
+    active: singleEureka
+---
+server:
+  port: 8085
+spring:
+  application:
+    name: singleEureka
+  profiles: singleEureka
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+#    health-check-url: http://${eureka.instance.instance-id}/health
+#    status-page-url: http://${eureka.instance.instance-id}/info
+#    home-page-url: http://${eureka.instance.instance-id}/
+#    statusPageUrlPath: ${eureka.instance.instance-id}/info
+#    healthCheckUrlPath: ${eureka.instance.instance-id}/health
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 3000
+logging:
+  level:
+    com.netflix: warn
+---
+server:
+  port: 8081
+spring:
+  application:
+    name: EurekaServer-cluster
+  profiles: eureka1
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    register-with-eureka: true #指定是否要注册到注册中心 （默认true）
+    fetch-registry: true #指定是否要冲注册中心获取服务(默认true)
+    service-url: #用于搭建server集群的时候指定其他server 地址
+      defaultZone:
+        http://localhost:8082/eureka/,http://localhost:8083/eureka/
+  server:
+    enable-self-preservation: false #是否开启保护模式（默认true） 保护模式指：在3次指定的时间内没有收到客户端的心跳时 对客户端的注册信息是（不开启保护模式）踢出还是（开启保护模式）等待心跳
+    eviction-interval-timer-in-ms: 3000 # 清理间隔(单位毫秒，默认60*1000)
+logging:
+  level:
+    com.netflix: warn
+
+---
+server:
+  port: 8082
+spring:
+  application:
+    name: EurekaServer-cluster
+  profiles: eureka2
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    register-with-eureka: true #指定是否要注册到注册中心 （默认true）
+    fetch-registry: true #指定是否要冲注册中心获取服务(默认true)
+    service-url: #用于搭建server集群的时候指定其他server 地址
+      defaultZone:
+        http://localhost:8081/eureka/,http://localhost:8083/eureka/
+  server:
+    enable-self-preservation: false #是否开启保护模式（默认true） 保护模式指：在3次指定的时间内没有收到客户端的心跳时 对客户端的注册信息是（不开启保护模式）踢出还是（开启保护模式）等待心跳
+    eviction-interval-timer-in-ms: 3000 # 清理间隔(单位毫秒，默认60*1000)
+logging:
+  level:
+    com.netflix: warn
+
+---
+server:
+  port: 8083
+spring:
+  application:
+    name: EurekaServer-cluster
+  profiles: eureka3
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+  client:
+    register-with-eureka: true #指定是否要注册到注册中心 （默认true）
+    fetch-registry: true #指定是否要冲注册中心获取服务(默认true)
+    service-url: #用于搭建server集群的时候指定其他server 地址
+      defaultZone:
+        http://localhost:8081/eureka/,http://localhost:8082/eureka/
+  server:
+    enable-self-preservation: false #是否开启保护模式（默认true） 保护模式指：在3次指定的时间内没有收到客户端的心跳时 对客户端的注册信息是（不开启保护模式）踢出还是（开启保护模式）等待心跳
+    eviction-interval-timer-in-ms: 3000 # 清理间隔(单位毫秒，默认60*1000)
+logging:
+  level:
+    com.netflix: warn
