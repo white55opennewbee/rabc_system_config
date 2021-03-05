@@ -1,0 +1,35 @@
+server:
+  port: 10000
+spring:
+  application:
+    name: zuul-ser
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8085/eureka/
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+zuul:
+  prefix: /api/ #前缀  路径包含此前缀才能进入网关 localhost:10000/api/xxx/xxx/xxx
+  routes:
+    user:
+      path: /u/**
+#      url: http://localhost:8091  # 指定远程user模块地址，基本不使用，相当于服务端写死，无法负载均衡
+    student:
+      path: /s/**
+  ignored-services: '*' # 忽略的服务器，不允许外网访问，如果不配置默认就会对每个服务开启一个适配的路径对外访问
+  add-host-header: true
+  sensitive-headers: #不对敏感资源做拦截
+  ignored-headers:
+  host:
+    socket-timeout-millis: 4000 # 请求的处理时间
+    connect-timeout-millis: 4000 # 请求的链接时间
+
+#开启路由端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'routers'
