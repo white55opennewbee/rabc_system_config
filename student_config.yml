@@ -1,0 +1,21 @@
+server:
+  port: 8902
+spring:
+  application:
+    name: student
+eureka:
+  instance:
+    hostname: localhost
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
+#    health-check-url: http://${eureka.instance.instance-id}/health
+#    status-page-url: http://${eureka.instance.instance-id}/info
+#    home-page-url: http://${eureka.instance.instance-id}/
+#    statusPageUrlPath: ${eureka.instance.instance-id}/info
+#    healthCheckUrlPath: ${eureka.instance.instance-id}/health
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8085/eureka
+    healthcheck:
+      enabled: true
